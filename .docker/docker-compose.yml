@@ -1,0 +1,18 @@
+version: '3'
+services: 
+    flutter:
+        container_name: flutter
+        build:
+            context: ./ubuntu
+            args:
+              - FLUTTER_VERSION=${FLUTTER_VERSION}
+              - INSTALL_ANDROID=${INSTALL_ANDROID}
+        ports:
+            - "6080:80"
+            - "62535:55555"
+        volumes:
+            - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+        working_dir: ${APP_CODE_PATH_CONTAINER}
+        tty: true
+#        entrypoint: >
+#            /bin/bash -c "cd ./src; flutter run -d web-server --web-port 55555 --web-hostname 0.0.0.0;"
