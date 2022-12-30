@@ -1,14 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'image_viewer.dart';
+import 'providers/providers_category.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp
-
-  ({super.key});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +24,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage
-
-  ({super.key, required this.title});
+  const MyHomePage({super.key, required this.title});
 
   final String title;
 
@@ -44,33 +43,42 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String? isSelectedItem = 'aaa';
 
+  void getCategoryData() async {
+    UserProviders userProviders = UserProviders();
+    userProviders.getUser().then((value) => value.forEach((element) {
+          print(element.response.categories.first.coverUrl);
+        }));
+  }
+
   @override
   Widget build(BuildContext context) {
+    // todo: check provider
+    // getCategoryData();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
+      body: SingleChildScrollView(
+          child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-
           children: <Widget>[
-
             //dropdown
             //ref: https://blog.flutteruniv.com/flutter-dropdownbutton/
             DropdownButton(
               items: const [
                 DropdownMenuItem(
-                  child: Text('aaa'),
                   value: 'aaa',
+                  child: Text('aaa'),
                 ),
                 DropdownMenuItem(
-                  child: Text('bbb'),
                   value: 'bbb',
+                  child: Text('bbb'),
                 ),
                 DropdownMenuItem(
-                  child: Text('ccc'),
                   value: 'ccc',
+                  child: Text('ccc'),
                 ),
               ],
               onChanged: (String? value) {
@@ -90,14 +98,11 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headline4,
+              style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
-      ),
+      )),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
@@ -109,28 +114,26 @@ class _MyHomePageState extends State<MyHomePage> {
 
 Widget _image_view(isSelectedItem) {
   double _width = 300;
-  String _url = 'https://1.bp.blogspot.com/-7uiCs6dI4a0/YEGQA-8JOrI/AAAAAAABddA/qPFt2E8vDfQwPQsAYLvk4lowkwP-GN7VQCNcBGAsYHQ/s896/buranko_girl_smile.png';
+  String _url =
+      'https://1.bp.blogspot.com/-7uiCs6dI4a0/YEGQA-8JOrI/AAAAAAABddA/qPFt2E8vDfQwPQsAYLvk4lowkwP-GN7VQCNcBGAsYHQ/s896/buranko_girl_smile.png';
 
   if (isSelectedItem == 'aaa') {
-    String _url = 'https://2.bp.blogspot.com/-tVKhDc9GKXU/ULxuAO4F9eI/AAAAAAAAHm8/XAl0zToQtVM/s1600/animal_taka.png';
+    String _url =
+        'https://2.bp.blogspot.com/-tVKhDc9GKXU/ULxuAO4F9eI/AAAAAAAAHm8/XAl0zToQtVM/s1600/animal_taka.png';
+  } else if (isSelectedItem == 'bbb') {
+    String _url =
+        'https://4.bp.blogspot.com/-mfqbB0DfCDo/UTbWrZXNlPI/AAAAAAAAOic/lkRI5dseik4/s1600/bird_hato.png';
   }
-  else if (isSelectedItem == 'bbb') {
-    String _url = 'https://4.bp.blogspot.com/-mfqbB0DfCDo/UTbWrZXNlPI/AAAAAAAAOic/lkRI5dseik4/s1600/bird_hato.png';
-  }
-  return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(isSelectedItem),
-        Container(
-          width: _width,
-          child: Image.network('$_url'),
-        ),
-        Container(
-          width: _width,
-          child: Image.network(
-              'https://4.bp.blogspot.com/-mfqbB0DfCDo/UTbWrZXNlPI/AAAAAAAAOic/lkRI5dseik4/s1600/bird_hato.png'
-          ),
-        ),
-      ]
-  );
+  return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+    Text(isSelectedItem),
+    Container(
+      width: _width,
+      child: Image.network('$_url'),
+    ),
+    Container(
+      width: _width,
+      child: Image.network(
+          'https://4.bp.blogspot.com/-mfqbB0DfCDo/UTbWrZXNlPI/AAAAAAAAOic/lkRI5dseik4/s1600/bird_hato.png'),
+    ),
+  ]);
 }

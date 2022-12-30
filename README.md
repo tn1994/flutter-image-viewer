@@ -1,14 +1,34 @@
 # flutter-image-viewer
 
-Docker ref:
+Machine:
 
-https://github.com/c-a-p-engineer/docker-flutter
+- OS: MacOS
+- IDE: IntelliJ IDEA
+- Docker, docker-compose
 
-SETUP:
+---
+
+Setup Local:
 
 ```shell
-sh flutter_exec.sh
+# for MacOS
+brew install flutter
+```
 
+Install Plugin Flutter to IntelliJ IDEA
+Restart IDE
+
+```shell
+cd ./src
+flutter packages get
+flutter pub get
+```
+
+Setup Initial:
+
+```shell
+# Only ONCE
+sh flutter_exec.sh
 sh flutter_init.sh
 ```
 
@@ -22,4 +42,9 @@ sh flutter_run.sh
 
 # after change files, wanna hot reload
 r
+```
+
+```shell
+# another local terminal
+flutter packages get
 ```
