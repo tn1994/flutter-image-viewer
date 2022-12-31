@@ -18,12 +18,13 @@ class ImageViewerState extends State<ImageViewer> {
   // ref: https://docs.flutter.dev/development/ui/layout
   // ref: https://zenn.dev/tomofyro/articles/a78fadeaa07efa
 
-  final double _width = 300;
+  // iPhone XS Max: width 414px, height 896px
+  final double _width = 200;
   List imageList = [];
 
+  /*
   String? _url =
       'https://1.bp.blogspot.com/-7uiCs6dI4a0/YEGQA-8JOrI/AAAAAAABddA/qPFt2E8vDfQwPQsAYLvk4lowkwP-GN7VQCNcBGAsYHQ/s896/buranko_girl_smile.png';
-
   void changeUrl() {
     setState(() {
       if (widget.isSelectedItem == 'aaa') {
@@ -35,16 +36,14 @@ class ImageViewerState extends State<ImageViewer> {
       }
     });
   }
+  */
 
-  void setImage() {
-    setState(() {
-      getImage();
-    });
-  }
-
-  void getImage() async {
+  // void getImage() async {
+  void getImage() {
     ImageProviders imageProviders = ImageProviders();
-    imageProviders.getImages().then((value) => imageList = value);
+    imageProviders
+        .getImages(widget.isSelectedItem)
+        .then((value) => imageList = value);
     // imageList = imageProviders.getImages() as List;
     debugPrint('imageList:');
     debugPrint(imageList.toString());
@@ -62,7 +61,8 @@ class ImageViewerState extends State<ImageViewer> {
   List<Widget> _makeWidgetsForLoop(List imageList) {
     List<Widget> tmpContentWidgets = [];
     for (int i = 0; i < imageList.length - 1; i++) {
-      tmpContentWidgets.add(Row(children: [
+      tmpContentWidgets
+          .add(Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         SizedBox(
           width: _width,
           child: Image.network(imageList[i]),
@@ -76,15 +76,29 @@ class ImageViewerState extends State<ImageViewer> {
     return tmpContentWidgets;
   }
 
+  void setImage() async {
+    setState(() {
+      getImage();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    changeUrl();
+    // changeUrl();
     setImage();
+    // var contentWidgets = _makeWidgetsForLoop(imageList);
 
-    var contentWidgets = _makeWidgetsForLoop(imageList);
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center, children: contentWidgets);
+    if (imageList.isNotEmpty) {
+      return SizedBox(
+          width: double.infinity,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: _makeWidgetsForLoop(imageList)));
+    } else {
+      return const Text('No Image');
+    }
 
+    /*
     return Column(children: [
       Column(children: [
         Text(widget.isSelectedItem),
@@ -102,5 +116,6 @@ class ImageViewerState extends State<ImageViewer> {
         ),
       ]),
     ]);
+    */
   }
 }

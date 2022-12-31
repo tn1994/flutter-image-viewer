@@ -40,10 +40,10 @@ class ImageProviders {
   // twice
   // String boardId = '331648028748761641';
   // ocha norma
-  String boardId = '837599299386886525';
+  // String boardId = '837599299386886525';
 
-  Future<List> getImages() async {
-    String urlApi = 'http://localhost:8080/get/board/$boardId';
+  Future<List> getImages(String boardId) async {
+    String urlApi = 'http://iMac.local:8080/get/board/$boardId';
     Map<String, String> headers = {
       'content-type': 'application/json',
       'Access-Control-Allow-Origin': '*'

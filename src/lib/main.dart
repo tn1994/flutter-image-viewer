@@ -8,17 +8,20 @@ void main() {
   runApp(const MyApp());
 }
 
+const version = 'v0.0.0';
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const title = 'Image Viewer $version';
     return MaterialApp(
       title: 'Image Viewer',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Image Viewer Home Page'),
+      home: const MyHomePage(title: title),
     );
   }
 }
@@ -41,7 +44,8 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  String? isSelectedItem = 'aaa';
+  String? isSelectedItem =
+      '331648028748761641'; // default, must in DropdownItem value
 
   void getCategoryData() async {
     UserProviders userProviders = UserProviders();
@@ -69,16 +73,16 @@ class _MyHomePageState extends State<MyHomePage> {
             DropdownButton(
               items: const [
                 DropdownMenuItem(
-                  value: 'aaa',
-                  child: Text('aaa'),
+                  value: '331648028748761641',
+                  child: Text('TWICE'),
                 ),
                 DropdownMenuItem(
-                  value: 'bbb',
-                  child: Text('bbb'),
+                  value: '837599299386886525',
+                  child: Text('OCHA NORMA'),
                 ),
                 DropdownMenuItem(
-                  value: 'ccc',
-                  child: Text('ccc'),
+                  value: '626915279318657968',
+                  child: Text('EXID'),
                 ),
               ],
               onChanged: (String? value) {
