@@ -38,6 +38,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  final GlobalKey<ImageViewerState> _key = GlobalKey<ImageViewerState>();
+
   void _incrementCounter() {
     setState(() {
       _counter++;
@@ -54,6 +56,35 @@ class _MyHomePageState extends State<MyHomePage> {
         }));
   }
 
+  Widget dropdownButtonWidget() {
+    return DropdownButton(
+      items: const [
+        DropdownMenuItem(
+          value: '331648028748761641',
+          child: Text('TWICE'),
+        ),
+        DropdownMenuItem(
+          value: '837599299386886525',
+          child: Text('OCHA NORMA'),
+        ),
+        DropdownMenuItem(
+          value: '626915279318657968',
+          child: Text('EXID'),
+        ),
+      ],
+      onChanged: (String? value) {
+        setState(() {
+          isSelectedItem = value;
+          // _key.currentState?.setState(() {});
+          _key.currentState?.getImage(value.toString()); // todo: success
+          // _key.currentState?.build(context);
+          // _key.currentState?.initState();
+        });
+      },
+      value: isSelectedItem,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // todo: check provider
@@ -67,35 +98,11 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            //dropdown
-            //ref: https://blog.flutteruniv.com/flutter-dropdownbutton/
-            DropdownButton(
-              items: const [
-                DropdownMenuItem(
-                  value: '331648028748761641',
-                  child: Text('TWICE'),
-                ),
-                DropdownMenuItem(
-                  value: '837599299386886525',
-                  child: Text('OCHA NORMA'),
-                ),
-                DropdownMenuItem(
-                  value: '626915279318657968',
-                  child: Text('EXID'),
-                ),
-              ],
-              onChanged: (String? value) {
-                setState(() {
-                  isSelectedItem = value;
-                  // _key.currentState?.setState(() {});
-                });
-              },
-              value: isSelectedItem,
-            ),
+          children: [
+            dropdownButtonWidget(),
 
             // _image_view(isSelectedItem),
-            ImageViewer(isSelectedItem: isSelectedItem.toString()),
+            ImageViewer(key: _key, isSelectedItem: isSelectedItem.toString()),
 
             const Text(
               'You have pushed the button this many times:',

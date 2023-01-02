@@ -21,32 +21,24 @@ class ImageViewerState extends State<ImageViewer> {
   // iPhone XS Max: width 414px, height 896px
   final double _width = 200;
   List imageList = [];
+  String isSelectedItem = '';
 
-  /*
-  String? _url =
-      'https://1.bp.blogspot.com/-7uiCs6dI4a0/YEGQA-8JOrI/AAAAAAABddA/qPFt2E8vDfQwPQsAYLvk4lowkwP-GN7VQCNcBGAsYHQ/s896/buranko_girl_smile.png';
-  void changeUrl() {
-    setState(() {
-      if (widget.isSelectedItem == 'aaa') {
-        _url =
-            'https://2.bp.blogspot.com/-tVKhDc9GKXU/ULxuAO4F9eI/AAAAAAAAHm8/XAl0zToQtVM/s1600/animal_taka.png';
-      } else if (widget.isSelectedItem == 'bbb') {
-        _url =
-            'https://4.bp.blogspot.com/-mfqbB0DfCDo/UTbWrZXNlPI/AAAAAAAAOic/lkRI5dseik4/s1600/bird_hato.png';
-      }
-    });
-  }
-  */
-
-  // void getImage() async {
-  void getImage() {
-    ImageProviders imageProviders = ImageProviders();
-    imageProviders
-        .getImages(widget.isSelectedItem)
-        .then((value) => imageList = value);
-    // imageList = imageProviders.getImages() as List;
-    debugPrint('imageList:');
-    debugPrint(imageList.toString());
+  Future<void> getImage(String boardId) async {
+    try {
+      ImageProviders imageProviders = ImageProviders();
+      // imageProviders
+      //     .getImages(widget.isSelectedItem)
+      //     .then((value) => imageList = value);
+      var response = await imageProviders.getImages(boardId);
+      // imageList = imageProviders.getImages() as List;
+      setState(() {
+        imageList = response;
+      });
+      // debugPrint('imageList:');
+      // debugPrint(imageList.toString());
+    } catch (_) {
+      debugPrint('getImage: error');
+    }
   }
 
   List<Widget> _makeWidgets(List imageList) {
@@ -76,46 +68,45 @@ class ImageViewerState extends State<ImageViewer> {
     return tmpContentWidgets;
   }
 
-  void setImage() async {
-    setState(() {
-      getImage();
-    });
+  // void setImage() {
+  //   setState(() {
+  //     isSelectedItem = widget.isSelectedItem;
+  //     debugPrint(isSelectedItem);
+  //     getImage();
+  //   });
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    getImage(widget.isSelectedItem);
+    // isSelectedItem = widget.isSelectedItem;
   }
 
   @override
   Widget build(BuildContext context) {
     // changeUrl();
-    setImage();
-    // var contentWidgets = _makeWidgetsForLoop(imageList);
+    debugPrint('isSelectedItem');
+    debugPrint(isSelectedItem);
+    debugPrint('widget.isSelectedItem');
+    debugPrint(widget.isSelectedItem);
+    // getImage();
 
+    return SizedBox(
+        width: double.infinity,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: _makeWidgetsForLoop(imageList)));
+
+    var contentWidgets = _makeWidgetsForLoop(imageList);
     if (imageList.isNotEmpty) {
       return SizedBox(
           width: double.infinity,
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: _makeWidgetsForLoop(imageList)));
+              children: contentWidgets));
     } else {
       return const Text('No Image');
     }
-
-    /*
-    return Column(children: [
-      Column(children: [
-        Text(widget.isSelectedItem),
-        Text('$_url'),
-      ]),
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        SizedBox(
-          width: _width,
-          child: Image.network('$_url'),
-        ),
-        SizedBox(
-          width: _width,
-          child: Image.network(
-              'https://4.bp.blogspot.com/-mfqbB0DfCDo/UTbWrZXNlPI/AAAAAAAAOic/lkRI5dseik4/s1600/bird_hato.png'),
-        ),
-      ]),
-    ]);
-    */
   }
 }

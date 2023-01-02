@@ -58,8 +58,8 @@ class ImageProviders {
     //   "https://i.pinimg.com/originals/64/3f/f2/643ff2103639ac53c5c8debb5b8e77fe.jpg"
     // ];
     // final welcome = resp;
-    debugPrint('welcome:');
-    debugPrint(welcome.toString());
+    // debugPrint('welcome:');
+    // debugPrint(welcome.toString());
 
     return welcome;
   }
