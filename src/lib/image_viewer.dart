@@ -13,6 +13,55 @@ class ImageViewer extends StatefulWidget {
   ImageViewerState createState() => ImageViewerState();
 }
 
+Widget gestureImageWidget(BuildContext context, String imageUrl, double width) {
+  return SizedBox(
+      width: width,
+      child: GestureDetector(
+        child: Image.network(
+          imageUrl,
+          fit: BoxFit.cover,
+        ),
+        onTap: () {
+          showGeneralDialog(
+            transitionDuration: Duration(milliseconds: 1000),
+            barrierDismissible: true,
+            barrierLabel: '',
+            context: context,
+            pageBuilder: (context, animation1, animation2) {
+              return DefaultTextStyle(
+                style: Theme.of(context).primaryTextTheme.bodyText1!,
+                child: Center(
+                  child: Container(
+                    // height: 500,
+                    width: double.infinity, // 500,
+                    child: SingleChildScrollView(
+                      child: InteractiveViewer(
+                        minScale: 0.1,
+                        maxScale: 5,
+                        child: Stack(children: <Widget>[
+                          Container(
+                            child: Image.network(imageUrl),
+                          ),
+                          Material(
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              icon: const Icon(Icons.close),
+                            ),
+                          )
+                        ]),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ));
+}
+
 class ImageViewerState extends State<ImageViewer> {
   // ref: https://teratail.com/questions/335484?link=qa_related_sp
   // ref: https://docs.flutter.dev/development/ui/layout
@@ -30,12 +79,9 @@ class ImageViewerState extends State<ImageViewer> {
       //     .getImages(widget.isSelectedItem)
       //     .then((value) => imageList = value);
       var response = await imageProviders.getImages(boardId);
-      // imageList = imageProviders.getImages() as List;
       setState(() {
         imageList = response;
       });
-      // debugPrint('imageList:');
-      // debugPrint(imageList.toString());
     } catch (_) {
       debugPrint('getImage: error');
     }
@@ -50,63 +96,35 @@ class ImageViewerState extends State<ImageViewer> {
         .toList();
   }
 
-  List<Widget> _makeWidgetsForLoop(List imageList) {
+  List<Widget> _makeWidgetsForLoop(BuildContext context, List imageList) {
     List<Widget> tmpContentWidgets = [];
     for (int i = 0; i < imageList.length - 1; i++) {
       tmpContentWidgets
           .add(Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        SizedBox(
-          width: _width,
-          child: Image.network(imageList[i]),
-        ),
-        SizedBox(
-          width: _width,
-          child: Image.network(imageList[i + 1]),
-        )
+        gestureImageWidget(context, imageList[i], _width),
+        gestureImageWidget(context, imageList[i + 1], _width),
       ]));
     }
     return tmpContentWidgets;
   }
 
-  // void setImage() {
-  //   setState(() {
-  //     isSelectedItem = widget.isSelectedItem;
-  //     debugPrint(isSelectedItem);
-  //     getImage();
-  //   });
-  // }
-
   @override
   void initState() {
     super.initState();
     getImage(widget.isSelectedItem);
-    // isSelectedItem = widget.isSelectedItem;
   }
 
   @override
   Widget build(BuildContext context) {
-    // changeUrl();
     debugPrint('isSelectedItem');
     debugPrint(isSelectedItem);
     debugPrint('widget.isSelectedItem');
     debugPrint(widget.isSelectedItem);
-    // getImage();
 
     return SizedBox(
         width: double.infinity,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: _makeWidgetsForLoop(imageList)));
-
-    var contentWidgets = _makeWidgetsForLoop(imageList);
-    if (imageList.isNotEmpty) {
-      return SizedBox(
-          width: double.infinity,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: contentWidgets));
-    } else {
-      return const Text('No Image');
-    }
+            children: _makeWidgetsForLoop(context, imageList)));
   }
 }
