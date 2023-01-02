@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'image_viewer.dart';
 import 'providers/providers_category.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future main() async {
+  await dotenv.load(fileName: '.env');
   runApp(const MyApp());
 }
 
-const version = 'v0.0.1';
+const version = 'v0.0.2';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -21,6 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      darkTheme: ThemeData.dark(),
       home: const MyHomePage(title: title),
     );
   }
@@ -166,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> getBoardIdList(String queryName) async {
     try {
       ImageProviders imageProviders = ImageProviders();
-      List<String> response = await imageProviders.getBoaedIdList(queryName);
+      List<String> response = await imageProviders.getBoardIdList(queryName);
       setState(() {
         boardIdList = response;
         isSelectedBoardId = response[0];

@@ -25,3 +25,5 @@ doc/api/
 
 # For MacOS
 *.DS_Store
+
+.env*

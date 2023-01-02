@@ -42,6 +42,7 @@ Widget gestureImageWidget(BuildContext context, String imageUrl, double width) {
                           Container(
                             child: Image.network(imageUrl),
                           ),
+                          // todo: another handling
                           Material(
                             child: IconButton(
                               onPressed: () {
@@ -97,8 +98,9 @@ class ImageViewerState extends State<ImageViewer> {
   }
 
   List<Widget> _makeWidgetsForLoop(BuildContext context, List imageList) {
+    // 2 columns in One row
     List<Widget> tmpContentWidgets = [];
-    for (int i = 0; i < imageList.length - 1; i++) {
+    for (int i = 0; i < imageList.length - 2; i += 2) {
       tmpContentWidgets
           .add(Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         gestureImageWidget(context, imageList[i], _width),

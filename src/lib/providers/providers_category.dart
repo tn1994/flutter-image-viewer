@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:src/models/model_user.dart';
 import 'package:src/models/model_category.dart';
 
-String baseUri = 'http://192.168.1.100:8000';
+String baseUri = dotenv.get('IMAGE_VIEWER_API');
+String xApiKey = dotenv.get('X_API_KEY');
 
 class UserProviders {
   //ref: https://github.com/vidal1101/Flutter-FastApi/blob/main/userapp/lib/src/providers/providers_user.dart
@@ -37,62 +39,41 @@ String welcomeToJson(List<String> data) =>
 class ImageProviders {
   //ref: https://github.com/vidal1101/Flutter-FastApi/blob/main/userapp/lib/src/providers/providers_user.dart
 
+  Map<String, String> headers = {
+    'content-type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'X-API-Key': xApiKey,
+  };
+
   Future<List<String>> getCategoryList() async {
-    String urlApi = 'http://iMac.local:8080/get/categories';
-    Map<String, String> headers = {
-      'content-type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    };
+    String urlApi = '$baseUri/get/categories';
     http.Response resp = await http.get(Uri.parse(urlApi), headers: headers);
     return welcomeFromJson(resp.body);
   }
 
   Future<List<String>> getGroupList(String categoryName) async {
-    String urlApi = 'http://iMac.local:8080/get/categories/$categoryName';
-    Map<String, String> headers = {
-      'content-type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    };
+    String urlApi = '$baseUri/get/categories/$categoryName';
     http.Response resp = await http.get(Uri.parse(urlApi), headers: headers);
-    debugPrint('urlApi');
-    debugPrint(urlApi);
-    debugPrint('resp');
-    debugPrint(resp.body);
-    return welcomeFromJson(utf8.decode(resp.bodyBytes));
+    return welcomeFromJson(
+        utf8.decode(resp.bodyBytes)); // handling for Japanese
   }
 
   Future<List<String>> getQueryList(
       String categoryName, String groupName) async {
-    String urlApi =
-        'http://iMac.local:8080/get/categories/$categoryName/group/$groupName';
-    Map<String, String> headers = {
-      'content-type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    };
+    String urlApi = '$baseUri/get/categories/$categoryName/group/$groupName';
     http.Response resp = await http.get(Uri.parse(urlApi), headers: headers);
-    debugPrint('urlApi');
-    debugPrint(urlApi);
-    debugPrint('resp');
-    debugPrint(resp.body);
-    return welcomeFromJson(utf8.decode(resp.bodyBytes));
+    return welcomeFromJson(
+        utf8.decode(resp.bodyBytes)); // handling for Japanese
   }
 
-  Future<List<String>> getBoaedIdList(String queryName) async {
-    String urlApi = 'http://iMac.local:8080/search/board/$queryName';
-    Map<String, String> headers = {
-      'content-type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    };
+  Future<List<String>> getBoardIdList(String queryName) async {
+    String urlApi = '$baseUri/search/board/$queryName';
     http.Response resp = await http.get(Uri.parse(urlApi), headers: headers);
     return welcomeFromJson(resp.body);
   }
 
   Future<List> getImages(String boardId) async {
-    String urlApi = 'http://iMac.local:8080/get/board/$boardId';
-    Map<String, String> headers = {
-      'content-type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    };
+    String urlApi = '$baseUri/get/board/$boardId';
     http.Response resp = await http.get(Uri.parse(urlApi), headers: headers);
     return welcomeFromJson(resp.body);
   }
