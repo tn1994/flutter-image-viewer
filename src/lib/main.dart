@@ -8,7 +8,7 @@ void main() {
   runApp(const MyApp());
 }
 
-const version = 'v0.0.0';
+const version = 'v0.0.1';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -37,6 +37,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  List<String> categoryList = [];
+  List<String> groupList = [];
+  List<String> queryList = [];
+  List<String> boardIdList = [];
 
   final GlobalKey<ImageViewerState> _key = GlobalKey<ImageViewerState>();
 
@@ -46,8 +50,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  String? isSelectedItem =
-      '331648028748761641'; // default, must in DropdownItem value
+  String? isSelectedCategory = '';
+  String? isSelectedGroup = 'TWICE';
+  String? isSelectedQueryName = 'TWICE';
+  String? isSelectedBoardId = ''; // default, must in DropdownItem value
 
   void getCategoryData() async {
     UserProviders userProviders = UserProviders();
@@ -56,33 +62,142 @@ class _MyHomePageState extends State<MyHomePage> {
         }));
   }
 
-  Widget dropdownButtonWidget() {
+  // category
+  Future<void> getCategoryList() async {
+    try {
+      ImageProviders imageProviders = ImageProviders();
+      List<String> response = await imageProviders.getCategoryList();
+      setState(() {
+        categoryList = response;
+        isSelectedCategory = response[0];
+        getGroupList(isSelectedCategory.toString());
+        // _key.currentState?.getImage(isSelectedBoardId.toString());
+      });
+    } catch (_) {
+      debugPrint('getCategoryList: error');
+    }
+  }
+
+  Widget categoryDropdownWidget(List<String> categoryList) {
     return DropdownButton(
-      items: const [
-        DropdownMenuItem(
-          value: '331648028748761641',
-          child: Text('TWICE'),
-        ),
-        DropdownMenuItem(
-          value: '837599299386886525',
-          child: Text('OCHA NORMA'),
-        ),
-        DropdownMenuItem(
-          value: '626915279318657968',
-          child: Text('EXID'),
-        ),
-      ],
+      items: categoryList
+          .map((boardId) =>
+              DropdownMenuItem(value: boardId, child: Text(boardId)))
+          .toList(),
       onChanged: (String? value) {
         setState(() {
-          isSelectedItem = value;
-          // _key.currentState?.setState(() {});
-          _key.currentState?.getImage(value.toString()); // todo: success
-          // _key.currentState?.build(context);
-          // _key.currentState?.initState();
+          isSelectedCategory = value;
+          getGroupList(isSelectedCategory.toString());
+          // _key.currentState?.getImage(value.toString()); // todo: success
         });
       },
-      value: isSelectedItem,
+      value: isSelectedCategory,
     );
+  }
+
+  // group
+  Future<void> getGroupList(String categoryName) async {
+    try {
+      ImageProviders imageProviders = ImageProviders();
+      List<String> response = await imageProviders.getGroupList(categoryName);
+      setState(() {
+        groupList = response;
+        isSelectedGroup = response[0];
+        getQueryList(categoryName, isSelectedGroup.toString());
+        // _key.currentState?.getImage(isSelectedBoardId.toString());
+      });
+    } catch (_) {
+      debugPrint('getCategoryList: error');
+    }
+  }
+
+  Widget groupDropdownWidget(List<String> groupList) {
+    return DropdownButton(
+      items: groupList
+          .map((groupName) =>
+              DropdownMenuItem(value: groupName, child: Text(groupName)))
+          .toList(),
+      onChanged: (String? value) {
+        setState(() {
+          isSelectedGroup = value;
+          getQueryList(
+              isSelectedCategory.toString(), isSelectedGroup.toString());
+          // _key.currentState?.getImage(value.toString());
+        });
+      },
+      value: isSelectedGroup,
+    );
+  }
+
+  // query
+  Future<void> getQueryList(String categoryName, String groupName) async {
+    try {
+      ImageProviders imageProviders = ImageProviders();
+      List<String> response =
+          await imageProviders.getQueryList(categoryName, groupName);
+      setState(() {
+        queryList = response;
+        isSelectedQueryName = response[0];
+        getBoardIdList(isSelectedQueryName.toString());
+      });
+    } catch (_) {
+      debugPrint('getGroups: error');
+    }
+  }
+
+  Widget queryDropdownWidget(List<String> queryList) {
+    return DropdownButton(
+      items: queryList
+          .map((queryName) =>
+              DropdownMenuItem(value: queryName, child: Text(queryName)))
+          .toList(),
+      onChanged: (String? value) {
+        setState(() {
+          isSelectedQueryName = value;
+          getBoardIdList(isSelectedQueryName.toString());
+          // _key.currentState?.getImage(value.toString()); // todo: success
+        });
+      },
+      value: isSelectedQueryName,
+    );
+  }
+
+  // board
+  Future<void> getBoardIdList(String queryName) async {
+    try {
+      ImageProviders imageProviders = ImageProviders();
+      List<String> response = await imageProviders.getBoaedIdList(queryName);
+      setState(() {
+        boardIdList = response;
+        isSelectedBoardId = response[0];
+        _key.currentState?.getImage(isSelectedBoardId.toString());
+      });
+    } catch (_) {
+      debugPrint('getGroups: error');
+    }
+  }
+
+  Widget dropdownButtonWidget(List<String> boardIdList) {
+    return DropdownButton(
+      items: boardIdList
+          .map((boardId) => DropdownMenuItem(
+              value: boardId, child: Text(boardId.substring(0, 6))))
+          .toList(),
+      onChanged: (String? value) {
+        setState(() {
+          isSelectedBoardId = value;
+          _key.currentState?.getImage(value.toString()); // todo: success
+        });
+      },
+      value: isSelectedBoardId,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCategoryList();
+    // getBoardIdList(isSelectedGroup.toString());
   }
 
   @override
@@ -98,11 +213,26 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            dropdownButtonWidget(),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Flexible(child: categoryDropdownWidget(categoryList)),
+                  Flexible(child: groupDropdownWidget(groupList)),
+                  Flexible(child: queryDropdownWidget(queryList)),
+                ]),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Flexible(child: dropdownButtonWidget(boardIdList)),
+                ]),
 
             // _image_view(isSelectedItem),
-            ImageViewer(key: _key, isSelectedItem: isSelectedItem.toString()),
+            ImageViewer(
+                key: _key, isSelectedItem: isSelectedBoardId.toString()),
 
             const Text(
               'You have pushed the button this many times:',

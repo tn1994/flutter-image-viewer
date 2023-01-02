@@ -37,10 +37,55 @@ String welcomeToJson(List<String> data) =>
 class ImageProviders {
   //ref: https://github.com/vidal1101/Flutter-FastApi/blob/main/userapp/lib/src/providers/providers_user.dart
 
-  // twice
-  // String boardId = '331648028748761641';
-  // ocha norma
-  // String boardId = '837599299386886525';
+  Future<List<String>> getCategoryList() async {
+    String urlApi = 'http://iMac.local:8080/get/categories';
+    Map<String, String> headers = {
+      'content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    };
+    http.Response resp = await http.get(Uri.parse(urlApi), headers: headers);
+    return welcomeFromJson(resp.body);
+  }
+
+  Future<List<String>> getGroupList(String categoryName) async {
+    String urlApi = 'http://iMac.local:8080/get/categories/$categoryName';
+    Map<String, String> headers = {
+      'content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    };
+    http.Response resp = await http.get(Uri.parse(urlApi), headers: headers);
+    debugPrint('urlApi');
+    debugPrint(urlApi);
+    debugPrint('resp');
+    debugPrint(resp.body);
+    return welcomeFromJson(utf8.decode(resp.bodyBytes));
+  }
+
+  Future<List<String>> getQueryList(
+      String categoryName, String groupName) async {
+    String urlApi =
+        'http://iMac.local:8080/get/categories/$categoryName/group/$groupName';
+    Map<String, String> headers = {
+      'content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    };
+    http.Response resp = await http.get(Uri.parse(urlApi), headers: headers);
+    debugPrint('urlApi');
+    debugPrint(urlApi);
+    debugPrint('resp');
+    debugPrint(resp.body);
+    return welcomeFromJson(utf8.decode(resp.bodyBytes));
+  }
+
+  Future<List<String>> getBoaedIdList(String queryName) async {
+    String urlApi = 'http://iMac.local:8080/search/board/$queryName';
+    Map<String, String> headers = {
+      'content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    };
+    http.Response resp = await http.get(Uri.parse(urlApi), headers: headers);
+    return welcomeFromJson(resp.body);
+  }
 
   Future<List> getImages(String boardId) async {
     String urlApi = 'http://iMac.local:8080/get/board/$boardId';
@@ -49,18 +94,6 @@ class ImageProviders {
       'Access-Control-Allow-Origin': '*'
     };
     http.Response resp = await http.get(Uri.parse(urlApi), headers: headers);
-    final welcome = welcomeFromJson(resp.body);
-
-    // todo: debug code
-    // List<String> resp = [
-    //   "https://i.pinimg.com/originals/5a/c5/22/5ac52225deadbb6594af21bd7d243127.jpg",
-    //   "https://i.pinimg.com/originals/a4/0f/74/a40f74bce9c84a7fde3848723dd8ccbd.jpg",
-    //   "https://i.pinimg.com/originals/64/3f/f2/643ff2103639ac53c5c8debb5b8e77fe.jpg"
-    // ];
-    // final welcome = resp;
-    // debugPrint('welcome:');
-    // debugPrint(welcome.toString());
-
-    return welcome;
+    return welcomeFromJson(resp.body);
   }
 }

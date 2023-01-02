@@ -23,7 +23,7 @@ Widget gestureImageWidget(BuildContext context, String imageUrl, double width) {
         ),
         onTap: () {
           showGeneralDialog(
-            transitionDuration: Duration(milliseconds: 1000),
+            transitionDuration: Duration(milliseconds: 100),
             barrierDismissible: true,
             barrierLabel: '',
             context: context,
@@ -121,10 +121,15 @@ class ImageViewerState extends State<ImageViewer> {
     debugPrint('widget.isSelectedItem');
     debugPrint(widget.isSelectedItem);
 
-    return SizedBox(
-        width: double.infinity,
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: _makeWidgetsForLoop(context, imageList)));
+    var contentWidgets = _makeWidgetsForLoop(context, imageList);
+    if (contentWidgets.isNotEmpty) {
+      return SizedBox(
+          width: double.infinity,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: _makeWidgetsForLoop(context, imageList)));
+    } else {
+      return const Text('No Image');
+    }
   }
 }
